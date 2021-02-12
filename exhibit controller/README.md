@@ -3,14 +3,6 @@
 ## Description
 All code that runs on the RPI which controls the entire exhibit.
 
-## Parts of the Program
-
-### Main Light Controller
-pi/pi.go. Controls all lights and scanners.
-
-### Reporting
-report/report.go. A module for analysing incoming packets and analysing for problems.
-
 ## Data Structure/contraint for communication:
 ##### Total bits: 32 bits
 * 3 bits: address
