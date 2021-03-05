@@ -5,7 +5,7 @@ import (
 	"time"
 
 	colorful "github.com/lucasb-eyer/go-colorful"
-	"github.com/pul-s4r/vivid18/akari/geo"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/geo"
 )
 
 // Demo represents a demo effect.

@@ -11,13 +11,13 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo"
-	"github.com/pul-s4r/vivid18/akari/geo"
-	"github.com/pul-s4r/vivid18/akari/lighting"
-	"github.com/pul-s4r/vivid18/akari/mapping"
-	"github.com/pul-s4r/vivid18/akari/netscan"
-	"github.com/pul-s4r/vivid18/akari/report"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/geo"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/lighting"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/mapping"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/netscan"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/report"
 
-	_ "github.com/pul-s4r/vivid18/akari/scan"
+	_ "github.com/rickqu/Vivid21Software/exhibit%20controller/scan"
 )
 
 type Fern struct {

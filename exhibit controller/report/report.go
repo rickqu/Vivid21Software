@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/pul-s4r/vivid18/akari/mapping"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/mapping"
 )
 
 // Possible errors.
