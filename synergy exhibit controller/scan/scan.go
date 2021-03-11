@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/1lann/sweep"
-	"github.com/pul-s4r/vivid18/akari/geo"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/geo"
 )
 
 var maxArc = 30.0

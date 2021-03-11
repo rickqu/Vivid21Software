@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"net"
 
-	"github.com/pul-s4r/vivid18/akari/lighting"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/lighting"
 )
 
 var Conn *net.UDPConn

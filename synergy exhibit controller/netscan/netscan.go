@@ -9,7 +9,7 @@ import (
 
 	"github.com/1lann/rpc"
 	"github.com/Sirupsen/logrus"
-	"github.com/pul-s4r/vivid18/akari/geo"
+	"github.com/rickqu/Vivid21Software/exhibit%20controller/geo"
 )
 
 const listenPort = "5555"
