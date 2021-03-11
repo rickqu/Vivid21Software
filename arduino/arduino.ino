@@ -2,6 +2,7 @@
 #include <IPAddress.h>
 #include <enc28j60.h>
 #include <FastLED.h>
+#include "test.cpp"
 
 #define BOARD_ID 9
 
@@ -41,7 +42,8 @@ unsigned long nextPing = 1000;
 uint8_t countReply[] = {'C', 0};
 uint8_t ackReply[] = {'A', 1};
 
-unsigned long curMillis = 0;
+//unsigned long curMillis = 0;
+unsigned long curMillis = SOME_CONSTANT;
 
 uint8_t Ethernet::buffer[1200];
 CRGB *leds = (CRGB*)(Ethernet::buffer + UDP_DATA_P);
@@ -213,4 +215,3 @@ void loop() {
     flashRed();
   }
 }
-
