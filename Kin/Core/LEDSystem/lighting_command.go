@@ -1,4 +1,4 @@
-package LightController
+package LEDSystem
 
 type LightCommand struct {
 	command string
