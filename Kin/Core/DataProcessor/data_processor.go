@@ -3,10 +3,12 @@ package DataProcessor
 import (
 	"github.com/rickqu/Vivid21Software/Kin/Core/LEDSystem"
 	"github.com/rickqu/Vivid21Software/Kin/Core/SensorArray"
+	"github.com/rickqu/Vivid21Software/Kin/Core/StartCode"
 )
 
 type DataProcessor interface {
-	StartProcessor(sensorInput chan SensorArray.SensorDatapoint,
-		lightingOutput chan LEDSystem.LightCommand)
-	StopProcessor()
+	Start(sensorInput chan SensorArray.SensorDatapoint,
+		lightingOutput chan LEDSystem.LightCommand,
+		startCode StartCode.StartCode)
+	Stop()
 }

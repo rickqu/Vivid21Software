@@ -1,15 +1,15 @@
 package SensorArray
 
+import "github.com/rickqu/Vivid21Software/Kin/Core/StartCode"
+
 type SensorArray interface {
 	AddSensor(string, Sensor)
 	CalibrateAll()
-	RunAll()
+	RunAll(startCode StartCode.StartCode)
 	StopAll()
 	StopSensor(string)
 	GetOutputFromChannel() SensorDatapoint
 }
-
-const output_chan_max_size int = 10
 
 type sensorArray struct {
 	dataOutputChannel chan SensorDatapoint
@@ -26,7 +26,7 @@ func (s sensorArray) CalibrateAll() {
 	}
 }
 
-func (s sensorArray) RunAll() {
+func (s sensorArray) RunAll(startCode StartCode.StartCode) {
 	for _, sensor := range s.sensorMap {
 		sensor.Run(s.dataOutputChannel)
 	}
@@ -46,9 +46,9 @@ func (s sensorArray) GetOutputFromChannel() SensorDatapoint {
 	return <-s.dataOutputChannel
 }
 
-func NewSensorArray() SensorArray {
+func NewSensorArray(dataOutputChannel chan SensorDatapoint) SensorArray {
 	newArray := sensorArray{}
-	newArray.dataOutputChannel = make(chan SensorDatapoint, output_chan_max_size)
+	newArray.dataOutputChannel = dataOutputChannel
 	newArray.sensorMap = make(map[string]Sensor)
 	return newArray
 }
