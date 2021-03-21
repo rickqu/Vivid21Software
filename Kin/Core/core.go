@@ -37,10 +37,17 @@ func NewCore(sensorArray SensorArray.SensorArray,
 	return core
 }
 
+func (c *Core) Setup(startCode StartCode.StartCode) {
+	// do we need a mapper between driver and system?
+	c.ledDriver.Initialise()
+	c.ledSystem.Setup(c.lightCommands, startCode)
+	c.processor.Setup(c.sensorDataChan, c.lightCommands, startCode)
+	c.sensorArray.CalibrateAll()
+}
+
 func (c *Core) Start(startCode StartCode.StartCode) {
-	go c.ledDriver.Initialise()
-	go c.ledSystem.Start(c.lightCommands, startCode)
-	go c.processor.Start(c.sensorDataChan, c.lightCommands, startCode)
+	go c.ledSystem.Start()
+	go c.processor.Start()
 	c.sensorArray.RunAll(startCode)
 }
 

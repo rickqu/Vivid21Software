@@ -2,6 +2,6 @@ package LEDDriver
 
 type LEDDriver interface {
 	Initialise()
-	Send()
+	Render()
 	Stop()
 }

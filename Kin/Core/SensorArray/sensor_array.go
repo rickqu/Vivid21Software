@@ -12,7 +12,7 @@ type SensorArray interface {
 }
 
 type sensorArray struct {
-	dataOutputChannel chan SensorDatapoint
+	dataOutputChannel <-chan SensorDatapoint
 	sensorMap         map[string]Sensor
 }
 
@@ -28,7 +28,7 @@ func (s sensorArray) CalibrateAll() {
 
 func (s sensorArray) RunAll(startCode StartCode.StartCode) {
 	for _, sensor := range s.sensorMap {
-		sensor.Run(s.dataOutputChannel)
+		go sensor.Run(s.dataOutputChannel)
 	}
 }
 
@@ -46,7 +46,7 @@ func (s sensorArray) GetOutputFromChannel() SensorDatapoint {
 	return <-s.dataOutputChannel
 }
 
-func NewSensorArray(dataOutputChannel chan SensorDatapoint) SensorArray {
+func NewSensorArray(dataOutputChannel <-chan SensorDatapoint) SensorArray {
 	newArray := sensorArray{}
 	newArray.dataOutputChannel = dataOutputChannel
 	newArray.sensorMap = make(map[string]Sensor)

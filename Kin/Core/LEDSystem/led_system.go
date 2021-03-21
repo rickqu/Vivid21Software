@@ -5,6 +5,7 @@ import (
 )
 
 type LEDSystem interface {
-	Start(chan LightCommand, StartCode.StartCode)
+	Setup(chan<- LightCommand, StartCode.StartCode)
+	Start()
 	Stop()
 }

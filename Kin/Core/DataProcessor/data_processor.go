@@ -7,8 +7,9 @@ import (
 )
 
 type DataProcessor interface {
-	Start(sensorInput chan SensorArray.SensorDatapoint,
-		lightingOutput chan LEDSystem.LightCommand,
+	Setup(sensorInput chan<- SensorArray.SensorDatapoint,
+		lightingOutput <-chan LEDSystem.LightCommand,
 		startCode StartCode.StartCode)
+	Start()
 	Stop()
 }
