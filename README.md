@@ -17,3 +17,6 @@ Sample code obtained from Synergy in 2018. For our reference.
 
 ### sandbox
 Put any private test code in here. I have set up git to ignore this entire folder.
+
+
+SOME GARBAGE PLEASE DELETE
