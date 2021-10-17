@@ -1,12 +1,7 @@
 package SensorArray
 
-type SensorArray interface {
-	Calibrate()
-	Run()
+type Sensor interface {
+	Run(<-chan SensorDatapoint)
 	Stop()
-	GetOutputChannel() chan SensorDatapoint
-}
-
-type OutputPusher struct {
-	outputChannel chan SensorDatapoint
+	Calibrate()
 }
