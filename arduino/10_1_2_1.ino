@@ -4,7 +4,11 @@
 #include <FastLED.h>
 #include "test.cpp"
 
-#define BOARD_ID 9
+#define BOARD_ID 1
+
+#if BOARD_ID < 1 
+#error BOARD_ID must be greater than or equal to 1. Board ID 0 is reserved for ledsim
+#endif
 
 #define ORDER_M20 RBG
 #define ORDER_M30 RBG
@@ -14,28 +18,32 @@
 #define ORDER_3 ORDER_M30
 #define ORDER_4 ORDER_M30
 
-#define NUM_1 120
-#define NUM_2 70
-#define NUM_3 70
-#define NUM_4 70
+// missing pins 5-8.
+#define NUM_1 36 +  102
+#define NUM_2 51
+#define NUM_3 104 + 94
+#define NUM_4 53
 
 #define NUM_PINS 4
 #define NUM_TOTAL NUM_1 + NUM_2 + NUM_3 + NUM_4
 
+// TODO!
 #define LED_TYPE UCS1903
 
 #define LISTEN_PORT 5151
 #define SERVER_PORT 5050
 
-const static uint8_t cfgIP[] = {192,168,2,BOARD_ID};
+const static uint8_t cfgIP[] = {10,1,2,BOARD_ID};
 const static uint8_t cfgMAC[] = {0x74,0x69,0x69,0x2D,0x30,BOARD_ID};
 
-const static uint8_t cfgGateway[] = {192,168,2,1};
+// ledsim is the gateway
+const static uint8_t cfgGateway[] = {10,1,2,0};
 
-#define PIN_1 10
-#define PIN_2 9
-#define PIN_3 6
-#define PIN_4 5
+// not indicative of final board
+#define PIN_1 2
+#define PIN_2 6
+#define PIN_3 14
+#define PIN_4 20
 
 unsigned long lastReceive = 0;
 unsigned long nextPing = 1000;
