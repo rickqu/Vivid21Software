@@ -2,3 +2,5 @@
 *.docx
 "synergy exhibit controller/"
 sandbox/
+.vscode/
+*log
