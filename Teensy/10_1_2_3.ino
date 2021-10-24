@@ -53,50 +53,9 @@ void blinkInit() {
 }
 
 void flashRed() {
-  unsigned long curMillis = millis();
-  int frame = (curMillis / 100) % 50;
   CRGB red = CRGB(0xFF, 0x00, 0x00);
-  CRGB off = CRGB(0x00, 0x00, 0x00);
-
-  if (frame < 2) {
-    setAllColor(red);
-  } else if (frame < 4) {
-    setAllColor(off);
-  } else if (frame < 6) {
-    setAllColor(red);
-  } else if (frame < 8) {
-    setAllColor(off);
-  } else if (frame < 10) {
-    setAllColor(red);
-  } else if (frame < 12) {
-    setAllColor(off);
-
-  } else if (frame < 17) {
-    setAllColor(red);
-  } else if (frame < 19) {
-    setAllColor(off);
-  } else if (frame < 24) {
-    setAllColor(red);
-  } else if (frame < 26) {
-    setAllColor(off);
-  } else if (frame < 31) {
-    setAllColor(red);
-  } else if (frame < 33) {
-    setAllColor(off);
-
-  } else if (frame < 35) {
-    setAllColor(red);
-  } else if (frame < 37) {
-    setAllColor(off);
-  } else if (frame < 39) {
-    setAllColor(red);
-  } else if (frame < 41) {
-    setAllColor(off);
-  } else if (frame < 43) {
-    setAllColor(red);
-  } else {
-    setAllColor(off);
-  }
+  setAllColor(red);
+  FastLED.show();
 }
 
 void setAllColor(CRGB color) {
