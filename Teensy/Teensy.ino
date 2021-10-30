@@ -6,17 +6,17 @@
 #include <NativeEthernet.h>
 #include <Arduino.h>
 
+//change #defines where necessary
 #define ETHERNET_BUFFER 1000
 #define NUM_LEDS_PER_STRIP 30
-#define NUM_STRIPS 8 //make sure pin list is accurate
+#define NUM_STRIPS 8
 
-//ethernet and timing functions setup
+//ethernet and timing variables
 uint8_t packetBuffer[ETHERNET_BUFFER];
 int c = 0;
 float fps = 0;
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
-
 EthernetUDP Udp;
 uint8_t mac[6]; //this is determined from the Teensy 4.1 board.  
 IPAddress ip(192, 168, 0, 100); //static ip address of Teensy board
@@ -36,6 +36,7 @@ DMAMEM int displayMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
 int drawingMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
 OctoWS2811 octo(NUM_LEDS_PER_STRIP, displayMemory, drawingMemory, WS2811_GRB | WS2811_800kHz, NUM_STRIPS, pinList);
 
+//custom c++ classes and templates for OctoWS2811
 template <EOrder RGB_ORDER = RGB,
           uint8_t CHIP = WS2811_800kHz>
 class CTeensy4Controller : public CPixelLEDController<RGB_ORDER, 8, 0xFF>
@@ -64,14 +65,24 @@ public:
         pocto->show();
     }
 };
-
 CTeensy4Controller<RGB, WS2811_800kHz> *pcontroller;
 
+
+//main setup function
 void setup() {
 
   Serial.begin(115200);
   delay(10);
+  
+  //light test (no ethernet)
+  octo.begin();
+  pcontroller = new CTeensy4Controller<RGB, WS2811_800kHz>(&octo);
+  FastLED.addLeds(pcontroller, rgbarray, NUM_LEDS);
+  FastLED.setBrightness(50);  
+  initTest();
 
+  //teensy ethernet MAC setup
+  Udp.begin(UDP_PORT);
   teensyMAC(mac);
  
   static char teensyMac[23];
@@ -86,19 +97,11 @@ void setup() {
   Serial.print("MAC: ");
   Serial.println(teensyMac);
  
-  Udp.begin(UDP_PORT);
-  
-  octo.begin();
-  pcontroller = new CTeensy4Controller<RGB, WS2811_800kHz>(&octo);
-
-  FastLED.addLeds(pcontroller, rgbarray, NUM_LEDS);
-  FastLED.setBrightness(50);
-  
-  initTest();
   Serial.println("Test Sequence Complete");
+}
 
-} //end setup
 
+//timing function for LEDs (DO NOT TOUCH UNLESS NECESSARY)
 static inline void fps2(const int seconds){
   // Create static variables so that the code and variables can
   // all be declared inside a function
@@ -119,6 +122,8 @@ static inline void fps2(const int seconds){
 
 }
 
+
+//timing function for LEDs (DO NOT TOUCH UNLESS NECESSARY)
 static inline void pixelrefresh(const int syncrefresh){
   // Create static variables so that the code and variables can
   // all be declared inside a function 
@@ -126,8 +131,7 @@ static inline void pixelrefresh(const int syncrefresh){
   static unsigned long frametimeend;
   static unsigned long frametimechk;
   static unsigned long frameonce;
-  unsigned long now = micros();
- 
+  unsigned long now = micros(); 
 
   //start frame time
   frametimestart = now;
@@ -157,7 +161,7 @@ static inline void pixelrefresh(const int syncrefresh){
 }
 
 
-
+//displays LED
 void pixelDisplay(uint8_t* pbuff, int count) {
   for (int i = 0; i < NUM_LEDS; i++) {
     byte charValueR = pbuff[i*3];
@@ -171,7 +175,8 @@ void pixelDisplay(uint8_t* pbuff, int count) {
 }
 
 
-void initTest() { //start up sequence. runs at board boot to make sure pixels are working
+//start up LED sequence. runs at board boot to make sure pixels are working
+void initTest() {
   LEDS.clear(); //clear led assignments
   
   LEDS.showColor(CRGB(125, 0, 0)); //turn all pixels on red
@@ -210,9 +215,7 @@ void initTest() { //start up sequence. runs at board boot to make sure pixels ar
 }
 
 
-
-
-//define mac address of board
+//define mac address of teensy board
 void teensyMAC(uint8_t *mac) {
 
   static char teensyMac[23];
@@ -271,9 +274,11 @@ void teensyMAC(uint8_t *mac) {
     Serial.println(teensyMac);
   #else
     Serial.println("ERROR: could not get MAC");
+    errorSequence();
   #endif
 }
 
+//main loop for gathering ethernet packets
 void loop() {
   //Process packets
    
@@ -286,4 +291,14 @@ void loop() {
   }
   pixelrefresh(0);
   
+}
+
+// flash red infinitely if Ethernet not working
+void errorSequence() {
+ while (1){
+   LEDS.showColor(CRGB(125, 0, 0)); //turn all pixels on red
+   delay(2000);
+   LEDS.showColor(CRGB(0, 0, 0)); //turn off all pixels
+   delay(2000);
+ }
 }
