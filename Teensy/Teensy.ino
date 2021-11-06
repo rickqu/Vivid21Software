@@ -1,26 +1,42 @@
-//OctoWS2811 powered by fastled on Teensy 4.1 and using NativeEthernet
-//Code modified from http://doityourselfchristmas.com/forums/showthread.php?55073-Teensy-4-1-E1-31-receiver-controller
+/* 
+   OctoWS2811 powered by fastled on Teensy 4.1 and using NativeEthernet
+   Code modified from http://doityourselfchristmas.com/forums/showthread.php?55073-Teensy-4-1-E1-31-receiver-controller
+   
+   Note that you need to download the library from https://github.com/PaulStoffregen/OctoWS2811 as the version in the Arduino 
+   library manager does not have all the code we want. 
+*/
 
 #include <OctoWS2811.h>
 #include <FastLED.h>
 #include <NativeEthernet.h>
 #include <Arduino.h>
 
-#define ETHERNET_BUFFER 1000
+//change #defines where necessary
+#define ETHERNET_SOCKET_SIZE 8192
+#define ETHERNET_BUFFER 6490
 #define NUM_LEDS_PER_STRIP 30
-#define NUM_STRIPS 8 //make sure pin list is accurate
+#define NUM_STRIPS 8
 
-//ethernet and timing functions setup
+//ethernet and timing variables
 uint8_t packetBuffer[ETHERNET_BUFFER];
+int Counter = 0;
 int c = 0;
 float fps = 0;
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
+#define BOARD_ID 2
+#if BOARD_ID < 2 
+#error BOARD_ID must be greater than or equal to 1. Board ID 0 and 1 are reserved for ledsim
+#endif
+
 EthernetUDP Udp;
 uint8_t mac[6]; //this is determined from the Teensy 4.1 board.  
-IPAddress ip(192, 168, 0, 100); //static ip address of Teensy board
-#define UDP_PORT 8888 //RPi UDP Port Number
+IPAddress ip(192, 168, 0, 100); //static ip address of Teensy board (J-og)
+//IPAddress ip(192, 168, 0, 2); //static ip address of Teensy board (J-20211025)
+//IPAddress ip(10, 1, 2, BOARD_ID); //static ip address of Teensy board (R)
+#define UDP_PORT 8888 //RPi UDP Port Number (J-og)
+//#define UDP_PORT 5151 //RPi UDP Port Number (R)
 
 //set up OctoWS2811 and FastLED for Teensy 4.1
 int unsigned NUM_LEDS = NUM_STRIPS * NUM_LEDS_PER_STRIP;
@@ -36,6 +52,8 @@ DMAMEM int displayMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
 int drawingMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
 OctoWS2811 octo(NUM_LEDS_PER_STRIP, displayMemory, drawingMemory, WS2811_GRB | WS2811_800kHz, NUM_STRIPS, pinList);
 
+/*---------------------------Custom Class---------------------------------*/
+//custom c++ classes and templates for OctoWS2811
 template <EOrder RGB_ORDER = RGB,
           uint8_t CHIP = WS2811_800kHz>
 class CTeensy4Controller : public CPixelLEDController<RGB_ORDER, 8, 0xFF>
@@ -64,61 +82,70 @@ public:
         pocto->show();
     }
 };
-
 CTeensy4Controller<RGB, WS2811_800kHz> *pcontroller;
 
+/*----------------------------Program---------------------------------*/
+//main setup function
 void setup() {
 
   Serial.begin(115200);
   delay(10);
-
+  
+  //teensy ethernet MAC setup
   teensyMAC(mac);
  
   static char teensyMac[23];
   sprintf(teensyMac, "MAC: %02x:%02x:%02x:%02x:%02x:%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
   Serial.print("MAC: ");
   Serial.println(teensyMac);
-  
+
+  Ethernet.setSocketSize(ETHERNET_SOCKET_SIZE);
   Ethernet.begin(mac, ip);
   
   Serial.print("IP Address: ");
   Serial.println(Ethernet.localIP());
   Serial.print("MAC: ");
   Serial.println(teensyMac);
- 
+
   Udp.begin(UDP_PORT);
-  
   octo.begin();
   pcontroller = new CTeensy4Controller<RGB, WS2811_800kHz>(&octo);
-
-  FastLED.addLeds(pcontroller, rgbarray, NUM_LEDS);
-  FastLED.setBrightness(50);
   
+  FastLED.addLeds(pcontroller, rgbarray, NUM_LEDS);
+  FastLED.setBrightness(50);  
+  
+  //light test (no ethernet)  
   initTest();
   Serial.println("Test Sequence Complete");
-
-} //end setup
-
-static inline void fps2(const int seconds){
-  // Create static variables so that the code and variables can
-  // all be declared inside a function
-  static unsigned long lastMillis;
-  static unsigned long frameCount;
-  static unsigned int framesPerSecond;
-  
-  // It is best if we declare millis() only once
-  unsigned long now = millis();
-  frameCount ++;
-  if (now - lastMillis >= seconds * 1000) {
-    framesPerSecond = frameCount / seconds;    
-    Serial.print("FPS @ ");
-    Serial.println(framesPerSecond);
-    frameCount = 0;
-    lastMillis = now;
-  }
-
 }
 
+//main loop for gathering ethernet packets
+void loop() {
+  //Process packets
+   
+  int packetSize = Udp.parsePacket(); //Read UDP packet count
+    
+  if(packetSize){
+    Serial.println(packetSize);
+    Udp.read(packetBuffer,ETHERNET_BUFFER); //read UDP packet
+    pixelDisplay(packetBuffer, 1); //process data function
+  }
+  /*
+  Serial.print(Counter++);
+  Serial.print("Packet Size: ");
+  Serial.println(packetSize);
+  Serial.print("packetBuffer first 5 CRGB contents: ");
+  for(int index = 0; index < 5; index++) {
+    Serial.print(packetBuffer[index],HEX);
+    Serial.print("\t");    // prints a tab
+  }
+  Serial.println();
+  */;
+  pixelrefresh(0);
+}
+/*-------------------------Functions LED----------------------------*/
+
+// (1) timing function for LEDs (DO NOT TOUCH UNLESS NECESSARY)
 static inline void pixelrefresh(const int syncrefresh){
   // Create static variables so that the code and variables can
   // all be declared inside a function 
@@ -126,8 +153,7 @@ static inline void pixelrefresh(const int syncrefresh){
   static unsigned long frametimeend;
   static unsigned long frametimechk;
   static unsigned long frameonce;
-  unsigned long now = micros();
- 
+  unsigned long now = micros(); 
 
   //start frame time
   frametimestart = now;
@@ -156,8 +182,17 @@ static inline void pixelrefresh(const int syncrefresh){
   }
 }
 
+// (2) flash red infinitely if Ethernet not working
+void errorSequence() {
+ while (1){
+   LEDS.showColor(CRGB(125, 0, 0)); //turn all pixels on red
+   delay(2000);
+   LEDS.showColor(CRGB(0, 0, 0)); //turn off all pixels
+   delay(2000);
+ }
+}
 
-
+// (3) displays LED
 void pixelDisplay(uint8_t* pbuff, int count) {
   for (int i = 0; i < NUM_LEDS; i++) {
     byte charValueR = pbuff[i*3];
@@ -170,8 +205,29 @@ void pixelDisplay(uint8_t* pbuff, int count) {
   fps2(10);
 }
 
+// (4) timing function for LEDs (DO NOT TOUCH UNLESS NECESSARY)
+static inline void fps2(const int seconds){
+  // Create static variables so that the code and variables can
+  // all be declared inside a function
+  static unsigned long lastMillis;
+  static unsigned long frameCount;
+  static unsigned int framesPerSecond;
+  
+  // It is best if we declare millis() only once
+  unsigned long now = millis();
+  frameCount ++;
+  if (now - lastMillis >= seconds * 1000) {
+    framesPerSecond = frameCount / seconds;    
+    Serial.print("FPS @ ");
+    Serial.println(framesPerSecond);
+    frameCount = 0;
+    lastMillis = now;
+  }
 
-void initTest() { //start up sequence. runs at board boot to make sure pixels are working
+}
+
+// (5) start up LED sequence. runs at board boot to make sure pixels are working
+void initTest() {
   LEDS.clear(); //clear led assignments
   
   LEDS.showColor(CRGB(125, 0, 0)); //turn all pixels on red
@@ -209,10 +265,8 @@ void initTest() { //start up sequence. runs at board boot to make sure pixels ar
   LEDS.showColor(CRGB(0,0,0)); //turn off all pixels to start
 }
 
-
-
-
-//define mac address of board
+/*-----------------------Functions Ethernet----------------------*/
+//define mac address of teensy board
 void teensyMAC(uint8_t *mac) {
 
   static char teensyMac[23];
@@ -271,19 +325,6 @@ void teensyMAC(uint8_t *mac) {
     Serial.println(teensyMac);
   #else
     Serial.println("ERROR: could not get MAC");
+    errorSequence();
   #endif
-}
-
-void loop() {
-  //Process packets
-   
-  int packetSize = Udp.parsePacket(); //Read UDP packet count
-    
-  if(packetSize){
-    //Serial.println(packetSize);
-    Udp.read(packetBuffer,ETHERNET_BUFFER); //read UDP packet
-    pixelDisplay(packetBuffer, 1); //process data function
-  }
-  pixelrefresh(0);
-  
 }
