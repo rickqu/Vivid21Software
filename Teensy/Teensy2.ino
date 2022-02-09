@@ -36,8 +36,8 @@ float fps = 0;
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
-#define BOARD_ID 1
-#if BOARD_ID < 1
+#define BOARD_ID 2
+#if BOARD_ID < 2
 #error BOARD_ID must be greater than or equal to 1. Board ID 0 and 1 are reserved for ledsim
 #endif
 
