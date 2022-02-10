@@ -26,7 +26,7 @@
 #define five 250
 #define six 193
 #define twenty 222
-#define twentyone 49
+#define twentyone 152
 
 //ethernet and timing variables
 uint8_t packetBuffer[ETHERNET_BUFFER];
@@ -230,7 +230,7 @@ void errorSequence() {
 void pixelDisplay(uint8_t* pbuff, int count) {
   int j = 0;
   for (int i = 0; i < 2000; i++) {
-    if(i<two || 249<i<(249+fourteen) || 499<i<(499+seven) || 749<i<(749+eight) || 999<i<(999+six) || 1249<i<(1249+twenty) || 1499<i<(1499+twentyone) || 1749<i<(1749+five)){
+    if((i<two)){/* pin 2 */
       byte charValueR = pbuff[j*3];
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
@@ -238,11 +238,68 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
       j++;
       //octo.setPixel(j, 0, 125, 0);
-//    } else {
-//      byte charValueR = 0;
-//      byte charValueG = 125;
-//      byte charValueB = 0;
-//      octo.setPixel(i, 0,100,0); //RBG GRB
+    }
+    else if(249<i && i<250+fourteen){/* pin 14 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    }
+    else if(499<i && i<500+seven){/* pin 7 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    }
+    else if(749<i && i<750+eight){/* pin 8 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    }
+    else if(999<i && i<1000+six){/* pin 6 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    }
+    else if(1249<i && i<1250+twenty){/* pin 20 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    }
+    else if(1499<i && i<1500+twentyone){/* pin 21 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    }
+    else if(1749<i && i<2000){/* pin 5 */
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+    } 
+    else {
+      byte charValueR = 0;
+      byte charValueG = 0;
+      byte charValueB = 0;
+      //Serial.println("I'm Here");
     }
   }
   octo.show();
