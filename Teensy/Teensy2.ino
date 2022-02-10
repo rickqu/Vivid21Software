@@ -229,21 +229,21 @@ void errorSequence() {
 //}
 void pixelDisplay(uint8_t* pbuff, int count) {
   int j = 0;
-  for (int i = 0; i < 1150; i++) {
-    if(j<two || 249<j<(249+fourteen) || 499<j<(499+seven) || 749<j<(749+eight) || 999<j<(999+six) || 1249<j<(1249+twenty) || 1499<j<(1499+twentyone) || 1749<j<(1749+five)){
-      byte charValueR = pbuff[i*3];
-      byte charValueG = pbuff[i*3+1];
-      byte charValueB = pbuff[i*3+2];
+  for (int i = 0; i < 2000; i++) {
+    if(i<two || 249<i<(249+fourteen) || 499<i<(499+seven) || 749<i<(749+eight) || 999<i<(999+six) || 1249<i<(1249+twenty) || 1499<i<(1499+twentyone) || 1749<i<(1749+five)){
+      byte charValueR = pbuff[j*3];
+      byte charValueG = pbuff[j*3+1];
+      byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(j, charValueG,charValueR,charValueB/10); //RBG GRB
-    } else {
-      byte charValueR = 0;
-      byte charValueG = 125;
-      byte charValueB = 0;
-      octo.setPixel(j, 0,100,0); //RBG GRB
-      i = i - 1;
+      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      j++;
+      //octo.setPixel(j, 0, 125, 0);
+//    } else {
+//      byte charValueR = 0;
+//      byte charValueG = 125;
+//      byte charValueB = 0;
+//      octo.setPixel(i, 0,100,0); //RBG GRB
     }
-    j++;
   }
   octo.show();
   pixelrefresh(1);
