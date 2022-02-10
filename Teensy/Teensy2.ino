@@ -16,7 +16,7 @@
 #define ETHERNET_BUFFER 6490
 #define NUM_LEDS_PER_STRIP 250
 #define NUM_STRIPS 8
-#define NUM_LEDS_OVERALL 2000
+#define NUM_LEDS_OVERALL 1136
 
 //Number of LEDS in each chain
 #define two 113
@@ -36,9 +36,9 @@ float fps = 0;
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
-#define BOARD_ID 2
-#if BOARD_ID < 2
-#error BOARD_ID must be greater than or equal to 1. Board ID 0 and 1 are reserved for ledsim
+#define BOARD_ID 1
+#if BOARD_ID < 1
+#error BOARD_ID must be greater than or equal to 1. Board ID 0 is reserved for ledsim
 #endif
 
 EthernetUDP Udp;
@@ -52,25 +52,23 @@ IPAddress ip(169, 254, 2, 2); //static ip address of Teensy board (J-20211025)
 //set up OctoWS2811 and FastLED for Teensy 4.1
 int unsigned NUM_LEDS = NUM_STRIPS * NUM_LEDS_PER_STRIP;
 //byte pinList[NUM_STRIPS] = {6, 20, 21, 5, 2, 14, 7, 8};
-byte pinList[NUM_STRIPS] = {2,7,8,14,5,6,20,21};
-/*generic same number of leds in each strip
- *CRGB rgbarray[NUM_STRIPS * NUM_LEDS_PER_STRIP];
- */
+byte pinList[NUM_STRIPS] = {2,14,7,8,6,20,21,5};
+/*generic same number of leds in each strip*/
+CRGB rgbarray[NUM_STRIPS * NUM_LEDS_PER_STRIP];
 /*Using actual number of leds*/
-CRGB rgbarray[NUM_LEDS_OVERALL];
+//CRGB rgbarray[NUM_LEDS_OVERALL];
 
 // These buffers need to be large enough for all the pixels.
 // The total number of pixels is "ledsPerStrip * numPins".
 // Each pixel needs 3 bytes, so multiply by 3.  An "int" is
 // 4 bytes, so divide by 4.  The array is created using "int"
 // so the compiler will align it to 32 bit memory.
-/* Generic same number of LEDS per pin
- *DMAMEM int displayMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
- *int drawingMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
- */
+/* Generic same number of LEDS per pin*/
+DMAMEM int displayMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
+int drawingMemory[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 / 4];
 /*Using actual number of leds*/
-DMAMEM int displayMemory[NUM_LEDS_OVERALL * 3 / 4];
-int drawingMemory[NUM_LEDS_OVERALL * 3 / 4];
+//DMAMEM int displayMemory[NUM_LEDS_OVERALL * 3 / 4];
+//int drawingMemory[NUM_LEDS_OVERALL * 3 / 4];
 /* Keep the intialisation below to the same maximum number of leds for each strip.
  *  All it does is give a lot of unused leds on each pin
  */
@@ -230,19 +228,19 @@ void errorSequence() {
 //  fps2(10);
 //}
 void pixelDisplay(uint8_t* pbuff, int count) {
-  int j = 250;
-  for (int i = 0; i < NUM_LEDS; i++) {
-    if(j<two || 249<j<(249+seven) || 499<j<(499+eight) || 749<j<(749+fourteen) || 999<j<(999+five) || 1249<j<(1249+six) || 1499<j<(1499+twenty) || 1749<j<(1749+twentyone)){
+  int j = 0;
+  for (int i = 0; i < 1150; i++) {
+    if(j<two || 249<j<(249+fourteen) || 499<j<(499+seven) || 749<j<(749+eight) || 999<j<(999+six) || 1249<j<(1249+twenty) || 1499<j<(1499+twentyone) || 1749<j<(1749+five)){
       byte charValueR = pbuff[i*3];
       byte charValueG = pbuff[i*3+1];
       byte charValueB = pbuff[i*3+2];
-      Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
+      //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
       octo.setPixel(j, charValueG,charValueR,charValueB/10); //RBG GRB
     } else {
       byte charValueR = 0;
-      byte charValueG = 0;
+      byte charValueG = 125;
       byte charValueB = 0;
-      octo.setPixel(j, charValueR,charValueG,charValueB); //RBG GRB
+      octo.setPixel(j, 0,100,0); //RBG GRB
       i = i - 1;
     }
     j++;
