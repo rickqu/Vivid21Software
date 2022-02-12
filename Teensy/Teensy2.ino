@@ -235,7 +235,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
       //octo.setPixel(j, 0, 125, 0);
     }
@@ -244,7 +244,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     }
     else if(499<i && i<500+seven){/* pin 7 */
@@ -252,7 +252,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     }
     else if(749<i && i<750+eight){/* pin 8 */
@@ -260,7 +260,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     }
     else if(999<i && i<1000+six){/* pin 6 */
@@ -268,7 +268,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     }
     else if(1249<i && i<1250+twenty){/* pin 20 */
@@ -276,7 +276,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     }
     else if(1499<i && i<1500+twentyone){/* pin 21 */
@@ -284,7 +284,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     }
     else if(1749<i && i<2000){/* pin 5 */
@@ -292,7 +292,7 @@ void pixelDisplay(uint8_t* pbuff, int count) {
       byte charValueG = pbuff[j*3+1];
       byte charValueB = pbuff[j*3+2];
       //Serial.print(charValueR);Serial.print(",");Serial.print(charValueG);Serial.print(",");Serial.println(charValueB);
-      octo.setPixel(i, charValueG,charValueR,charValueB/10); //RBG GRB
+      octo.setPixel(i, charValueR,charValueG,charValueB); //RBG GRB
       j++;
     } 
     else {
@@ -332,13 +332,13 @@ static inline void fps2(const int seconds){
 void initTest() {
   LEDS.clear(); //clear led assignments
   
-  LEDS.showColor(CRGB(125, 0, 0)); //turn all pixels on green
+  LEDS.showColor(CRGB(250, 0, 0)); //turn all pixels on green
   delay(3000);
 
-  LEDS.showColor(CRGB(0, 125, 0)); //turn all pixels on red
+  LEDS.showColor(CRGB(0, 250, 0)); //turn all pixels on red
   delay(3000);
 
-  LEDS.showColor(CRGB(0, 0, 125)); //turn all pixels on blue
+  LEDS.showColor(CRGB(0, 0, 250)); //turn all pixels on blue
   delay(3000);
 
   LEDS.showColor(CRGB(0,0,0)); //turn off all pixels to start
