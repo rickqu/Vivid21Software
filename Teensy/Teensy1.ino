@@ -19,14 +19,14 @@
 #define NUM_LEDS_OVERALL 1136
 
 //Number of LEDS in each chain
-#define two 155
+#define two 150
 #define seven 106
 #define eight 199
 #define fourteen 187
 #define five 0
-#define six 153
+#define six 183
 #define twenty 107
-#define twentyone 38
+#define twentyone 85
 
 //ethernet and timing variables
 uint8_t packetBuffer[ETHERNET_BUFFER];
