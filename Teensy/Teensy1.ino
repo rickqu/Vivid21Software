@@ -22,7 +22,7 @@
 #define two 150
 #define seven 106
 #define eight 199
-#define fourteen 187
+#define fourteen 194
 #define five 0
 #define six 209
 #define twenty 107
